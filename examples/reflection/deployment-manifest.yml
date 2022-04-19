@@ -1,0 +1,8 @@
+---
+applications:
+  - name: authorization-service
+    services:
+        - type: mongo
+          name: authorization-service
+        - rabbit
+        - redis

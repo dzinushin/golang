@@ -12,9 +12,9 @@ func main() {
 	tmpl := `
 Name: {{ .Name }}
 {{ (test "LLL") }}
-by env: '{{ (by_env "dev" "DEVEL" "ote" "OTE" "prod" "PRODUCTION") }}'
+by env: '{{ (by_env "dev" "DEVEL" "ote" "OTE" "prod" "PRODUCTION" "default" "SOMESHIT") }}'
 `
-	envName := "ote"
+	envName := "dev"
 	InterpolateManifest("k8s", envName, tmpl)
 }
 
@@ -33,7 +33,7 @@ func InterpolateManifest(name string, envName string, tmpl string) (string, erro
 			return "LALA" + p1
 		},
 		"by_env": func(args ...string) string {
-			var vals = map[string]string{}
+			var vals = make(map[string]string)
 			var key = ""
 			for i, v := range args {
 				fmt.Printf("i: %d v: %s\n", i, v)
@@ -44,7 +44,14 @@ func InterpolateManifest(name string, envName string, tmpl string) (string, erro
 				}
 			}
 			fmt.Println(vals)
-			return vals[envName]
+			result, present := vals[envName]
+			if !present {
+				result, present = vals["default"]
+				if !present {
+					panic(fmt.Sprintf("Can't determine value in 'by_env' template func for env name: %s", envName))
+				}
+			}
+			return result
 		},
 	})
 
