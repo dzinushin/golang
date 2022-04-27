@@ -1,0 +1,17 @@
+applications:
+  - name: mcs-devops-2
+    version: v0.12.0
+    repo: finance/marketplace/experiments/mcs-devops-2
+    envs: [ dev ]
+    services:
+      - type: mongo
+        name: mcs-devops-2
+      - postgre
+      - rabbit
+      - redis
+  - name: dev-nginx
+    version: "22"
+    repo: finance/marketplace/authorization/dev-nginx
+    envs:
+      - dev
+    services: []
